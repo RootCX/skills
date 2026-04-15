@@ -6,16 +6,11 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/rootcx/rootcx-skills"
+    "url": "https://github.com/RootCX/skills"
   },
   "files": [
-    "skills",
-    "dist"
+    "skills"
   ],
-  "scripts": {
-    "build": "node scripts/build-monolith.js",
-    "prepublishOnly": "node scripts/build-monolith.js"
-  },
   "keywords": [
     "agent-skills",
     "rootcx",

@@ -33,16 +33,6 @@ npx skills add rootcx/rootcx-skills
 npm install @rootcx/skills
 ```
 
-## Monolith build
-
-For Forge (Studio), a single concatenated file is generated at `dist/rootcx-sdk.md`:
-
-```bash
-npm run build
-```
-
-This runs automatically on `npm publish`.
-
 ## License
 
 Apache-2.0
