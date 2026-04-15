@@ -16,6 +16,7 @@ Apps require: `manifest.json` (data contract) + React code using `@rootcx/sdk` h
       "fields": [
         { "name": "<field>", "type": "<type>", "required": true },
         { "name": "<field>", "type": "entity_link", "references": { "entity": "<target>", "field": "id" } },
+        { "name": "<field>", "type": "entity_link", "required": true, "on_delete": "cascade", "references": { "entity": "<parent>", "field": "id" } },
         { "name": "<field>", "type": "text", "enum_values": ["a", "b", "c"] }
       ]
     }
@@ -35,8 +36,9 @@ Apps require: `manifest.json` (data contract) + React code using `@rootcx/sdk` h
 ### Rules
 
 - `id`, `created_at`, `updated_at` are auto-generated — omit from `fields`
-- `entity_link` requires `"references": { "entity": "<target>", "field": "id" }`. `<target>` is `"<entity>"` (same app) or `"core:users"` (FK → `rootcx_system.users`, `ON DELETE SET NULL`). Cross-app refs not yet supported.
+- `entity_link` requires `"references": { "entity": "<target>", "field": "id" }`. `<target>` is `"<entity>"` (same app) or `"core:users"` (FK → `rootcx_system.users`). Cross-app refs not yet supported.
 - `"required": true` = mandatory on create; omit key for optional
+- `"on_delete"` controls FK behavior when the referenced parent is deleted. Values: `"cascade"` (delete child with parent), `"restrict"` (block parent delete), `"set_null"` (set FK to NULL). If omitted: `required: true` defaults to `restrict`, optional fields default to `set_null`. Use `cascade` on join tables and child records that have no meaning without the parent (e.g. `list_records.list_id`). Never use `cascade` on user references.
 - `"enum_values": [...]` restricts text fields to fixed values
 
 ---
