@@ -1,0 +1,25 @@
+{
+  "name": "@rootcx/skills",
+  "version": "0.1.0",
+  "description": "Agent Skills for building RootCX apps — manifest, SDK hooks, UI, backend workers, REST API, and AI agents",
+  "type": "module",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rootcx/rootcx-skills"
+  },
+  "files": [
+    "skills",
+    "dist"
+  ],
+  "scripts": {
+    "build": "node scripts/build-monolith.js",
+    "prepublishOnly": "node scripts/build-monolith.js"
+  },
+  "keywords": [
+    "agent-skills",
+    "rootcx",
+    "ai",
+    "low-code"
+  ]
+}
