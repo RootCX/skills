@@ -81,7 +81,7 @@ const columns: ColumnDef<T, unknown>[] = [
 
 ## Routing
 
-`BrowserRouter` wraps the app in `main.tsx` (scaffold does this). Use `react-router-dom` for all navigation.
+`BrowserRouter` wraps the app in `main.tsx` (scaffold does this) with `basename={import.meta.env.BASE_URL}` — required because apps are served under `/apps/<app_id>/` in production. Use `react-router-dom` for all navigation.
 
 **Rules:**
 - Use `<SidebarItem to="/path" />` for sidebar navigation (renders `NavLink`, active state automatic)
@@ -94,7 +94,7 @@ const columns: ColumnDef<T, unknown>[] = [
 ## App entry pattern
 
 ```tsx
-// main.tsx wraps with BrowserRouter > RuntimeProvider > ThemeProvider
+// main.tsx: <BrowserRouter basename={import.meta.env.BASE_URL}> > RuntimeProvider > ThemeProvider
 
 // App.tsx
 <AuthGate appTitle="<Name>">
