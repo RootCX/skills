@@ -67,6 +67,18 @@ const columns: ColumnDef<T, unknown>[] = [
 />
 ```
 
+## Select with "All" filter
+
+```tsx
+<Select value={filter ?? "all"} onValueChange={(v) => setFilter(v === "all" ? undefined : v)}>
+  <SelectTrigger><SelectValue /></SelectTrigger>
+  <SelectContent>
+    <SelectItem value="all">All</SelectItem>
+    <SelectItem value="tier_1">Tier 1</SelectItem>
+  </SelectContent>
+</Select>
+```
+
 ## Routing
 
 `BrowserRouter` wraps the app in `main.tsx` (scaffold does this). Use `react-router-dom` for all navigation.
