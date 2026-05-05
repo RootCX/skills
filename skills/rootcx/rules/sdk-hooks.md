@@ -73,9 +73,7 @@ const client = useRuntimeClient();
 
 `client.queryRecords<T>(appId, entity, QueryOptions) → {data, total}` · `client.rpc(appId, method, params?) → unknown` · `client.core().collection<T>(entity).list() → T[]` · `client.core().collection<T>(entity).get(id) → T`
 
-`client.fetchJson<T>(url, init?) → T` — authenticated fetch to any Core API endpoint. Auto-refreshes token on 401. Use for APIs not covered by helpers (secrets, crons, etc.).
-
-`client.getBaseUrl() → string` · `client.getAccessToken() → string | null`
+`client.getBaseUrl() → string` · `client.getAccessToken() → string | null` — for manual authenticated calls to Core APIs not covered by helpers (secrets, crons, custom endpoints). Use `fetch(client.getBaseUrl() + path, { headers: { Authorization: \`Bearer ${client.getAccessToken()}\` } })`.
 
 For imperative calls in event handlers. For reactive data, use `useAppCollection` / `useCoreCollection`.
 
