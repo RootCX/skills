@@ -63,6 +63,22 @@ Expose worker RPC methods as AI agent tools. `id` = RPC method name.
 
 ---
 
+## Crons
+
+Declarative scheduled jobs. Core syncs via pg_cron on deploy (create/update/delete orphans).
+
+```json
+"crons": [
+  { "name": "daily-check", "schedule": "0 9 * * *", "timezone": "Europe/Paris", "payload": { "task": "do_thing" }, "overlapPolicy": "skip" }
+]
+```
+
+Fields: `name` (required, unique), `schedule` (required, cron 5-field or `"N seconds"`), `timezone` (IANA, default GMT), `method` (optional, injected into `payload.method`), `payload` (object, delivered to `onJob`), `overlapPolicy` (`"skip"` default | `"queue"`).
+
+Worker receives in `onJob` same as one-shot jobs. Core adds `cron_id` to payload.
+
+---
+
 ## Schema Sync
 
 On install/deploy, Core runs `CREATE SCHEMA IF NOT EXISTS` + `CREATE TABLE IF NOT EXISTS` for each entity in `dataContract`. Then `sync_schema` diffs DB vs manifest and auto-applies all changes (add/drop columns, alter types, nullability, defaults, check constraints). Studio shows a confirmation dialog before applying.
