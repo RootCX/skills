@@ -4,6 +4,7 @@ Base: `{runtime_url}/api/v1`. Authenticated requests use `Authorization: Bearer 
 
 Load the detailed endpoint references:
 - [Collections](./rest-api-collections.md)
+- [Storage](./rest-api-storage.md)
 - [Integrations](./rest-api-integrations.md)
 - [Jobs](./rest-api-jobs.md)
 
@@ -33,6 +34,14 @@ Base: `/api/v1/apps/{app_id}/collections/{entity}`
 - Actions + auth: `/api/v1/integrations/{integration_id}` (actions, auth start/credentials/disconnect)
 
 **From a worker:** `POST {runtime_url}/api/v1/integrations/{integration_id}/actions/{action_id}` with `Authorization: Bearer {authToken}`, body = action input.
+
+## Storage (summary)
+
+File storage managed by Core. Files stored in PostgreSQL BYTEA (max 64 MiB).
+
+Base: `/api/v1/apps/{app_id}/storage` — POST `/upload` (multipart), GET `/{file_id}`, DELETE `/{file_id}`.
+
+Use manifest field type `file` (→ TEXT) to store returned `file_id`. Frontend must pass JWT via `Authorization` header (not cookies). Use `fetch` + `FormData` for uploads, `fetch` + `blob()` for downloads.
 
 ## Jobs (summary)
 

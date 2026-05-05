@@ -43,6 +43,26 @@ Apps require: `manifest.json` (data contract) + React code using `@rootcx/sdk` h
 
 ---
 
+## Actions
+
+Expose worker RPC methods as AI agent tools. `id` = RPC method name.
+
+```json
+"actions": [
+  { "id": "<method>", "name": "<Name>", "description": "<when to use>", "inputSchema": { ... }, "outputSchema": { ... } }
+],
+"instructions": "<freeform guidance for AI on how/when to use these actions>"
+```
+
+- `inputSchema`: JSON Schema, required — LLM uses it to build valid input
+- `outputSchema`: optional — helps LLM interpret results
+- `description`: how the LLM decides when to call it
+- `instructions`: top-level, optional — multi-action coordination hints
+- RBAC: `app:{appId}:action:{id}` auto-registered at install. Agents with `app:{appId}:*` have access by default.
+- Worker receives standard RPC: `{ type: "rpc", method: "<id>", params: <input> }` — no code changes needed
+
+---
+
 ## Schema Sync
 
 On install/deploy, Core runs `CREATE SCHEMA IF NOT EXISTS` + `CREATE TABLE IF NOT EXISTS` for each entity in `dataContract`. Then `sync_schema` diffs DB vs manifest and auto-applies all changes (add/drop columns, alter types, nullability, defaults, check constraints). Studio shows a confirmation dialog before applying.

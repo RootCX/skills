@@ -21,5 +21,6 @@ RootCX is a low-code platform with a Rust/Axum Core, a Studio IDE, and an embedd
 - [REST API](./rules/rest-api.md) — Core HTTP API overview, where operators
 - [REST API — Collections](./rules/rest-api-collections.md) — CRUD endpoints, query params
 - [REST API — Integrations](./rules/rest-api-integrations.md) — bind, actions, auth
+- [REST API — Storage](./rules/rest-api-storage.md) — file upload/download/delete
 - [REST API — Jobs](./rules/rest-api-jobs.md) — async job queue
 - [AI Agent](./rules/agent.md) — LangGraph backend, agent.json config, SSE invoke

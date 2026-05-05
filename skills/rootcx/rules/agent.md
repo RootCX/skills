@@ -1,29 +1,27 @@
 # RootCX AI Agents
 
-Agents are apps with a `backend/` containing a LangGraph agent. Same manifest, same deploy, same RBAC. Core passes LLM credentials via IPC.
+Agents are apps with `backend/` containing a LangGraph agent. Same manifest, deploy, RBAC.
 
-## Project structure
+## Structure
 
 ```
 my-agent/
-├── manifest.json                  # Data contract (no agent field)
+├── manifest.json
 ├── .rootcx/launch.json
-├── src/App.tsx                    # Chat UI
+├── src/App.tsx
 └── backend/
-    ├── agent.json                 # Agent config (limits, memory, supervision)
-    ├── agent/system.md            # System prompt
-    ├── index.ts                   # LangGraph agent + IPC bridge
-    └── package.json               # @langchain/langgraph, @langchain/openai, zod
+    ├── agent.json
+    ├── agent/system.md
+    ├── index.ts
+    └── package.json
 ```
 
-## backend/agent.json
-
-Agent config — read by Core at deploy time, separate from manifest:
+## agent.json
 
 ```json
 {
   "name": "<name>",
-  "description": "<description>",
+  "description": "<desc>",
   "systemPrompt": "./agent/system.md",
   "memory": { "enabled": true },
   "limits": { "maxTurns": 50, "maxContextTokens": 100000, "keepRecentMessages": 10 },
@@ -31,21 +29,30 @@ Agent config — read by Core at deploy time, separate from manifest:
 }
 ```
 
-LLM provider selected at scaffold time. Platform secrets (`ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `AWS_BEARER_TOKEN_BEDROCK`) set via dashboard. Core passes credentials to agent at startup.
+Supervision modes: `autonomous` (free), `supervised` (policy-based approval), `strict` (every tool call approved).
 
-See [system prompt template](./templates/system.md) for starting file.
+## Tools
 
-## Tools & permissions
+Available to the agent via IPC:
 
-All registered tools available via IPC. RBAC permissions declared in `manifest.json` `permissions.permissions[]` as `{ "key": "<entity>.<action>", "description": "..." }` strings.
+- `query_data` / `mutate_data` — CRUD on any app's collections
+- `list_apps` / `describe_app` — discover apps and schemas
+- `list_integrations` / `call_integration` — external services (Gmail, Stripe…)
+- `list_actions` / `call_action` — custom app actions (see below)
+- `invoke_agent` — delegate to another agent
+
+## App actions
+
+Any app exposes RPC methods as agent tools by declaring `actions` in `manifest.json` (see [Manifest — Actions](./manifest.md#actions)). Agent discovers via `list_actions`, calls via `call_action({app, action, input})`. Worker receives standard RPC — no code changes.
+
+To give an agent new capabilities: add action to manifest + implement RPC handler in worker.
 
 ## Backend code
 
-The scaffold generates a single `index.ts` — the developer owns the code:
-- LangGraph `createReactAgent` handles the ReAct loop and streaming
-- Provider-specific LangChain SDK (ChatAnthropic, ChatOpenAI, ChatBedrockConverse)
-- IPC bridge (JSON-lines stdin/stdout) connects to Core for tool calls and supervision
-- Dependencies: `@langchain/langgraph`, provider package, `@langchain/core`, `zod`
+- LangGraph `createReactAgent` for ReAct loop + streaming
+- Provider SDK: ChatAnthropic / ChatOpenAI / ChatBedrockConverse
+- IPC bridge (JSON-lines stdin/stdout) connects to Core
+- Deps: `@langchain/langgraph`, provider package, `@langchain/core`, `zod`
 
 ## Invocation
 
@@ -54,9 +61,6 @@ POST /api/v1/apps/{app_id}/agent/invoke
 { "message": "...", "session_id": "optional-uuid" }
 ```
 
-Response: SSE stream (`chunk`, `tool_call_started`, `tool_call_completed`, `approval_required`, `done`, `error` events).
+SSE events: `chunk`, `tool_call_started`, `tool_call_completed`, `approval_required`, `done`, `error`.
 
-Other endpoints:
-- `GET /api/v1/apps/{app_id}/agent` — agent config
-- `GET /api/v1/apps/{app_id}/agent/sessions` — list sessions
-- `GET /api/v1/apps/{app_id}/agent/sessions/{session_id}` — get session
+Other: `GET .../agent` (config), `GET .../agent/sessions` (list), `GET .../agent/sessions/{id}` (detail).
