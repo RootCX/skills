@@ -79,6 +79,42 @@ Worker receives in `onJob` same as one-shot jobs. Core adds `cron_id` to payload
 
 ---
 
+## Public Access
+
+Declare which RPCs and collections are accessible without authentication.
+
+```json
+"public": {
+  "rpcs": [
+    { "name": "list_products" },
+    { "name": "get_public_board", "scope": ["board_id"] }
+  ],
+  "collections": [
+    { "entity": "product", "actions": ["list", "read"] }
+  ]
+}
+```
+
+### Rules
+
+- Routes NOT in `public` require a JWT (fail-closed, 401 without Bearer)
+- `rpcs[].scope` empty = anonymous access (no token needed)
+- `rpcs[].scope` non-empty = requires a share token. Core enforces that `share.context[key] == request.params[key]` for every listed key BEFORE the RPC executes. The app dev does NOT need to check scope manually.
+- `collections[].actions` = subset of `"list"`, `"read"`, `"create"`, `"update"`, `"delete"`
+- Add `"public.share"` to your manifest's `permissions` to let users create share links
+
+### Share tokens
+
+Users create share tokens via `client.createPublicShare(appId, { context: { board_id } })`. The token is a 43-char base64url string used as a Bearer. Visitors use it with:
+
+```tsx
+const client = new RuntimeClient({ accessToken: shareToken, persist: false, autoRefresh: false });
+const info = await client.getPublicShareInfo(); // → { appId, context }
+const data = await client.rpc(appId, "get_public_board", { board_id: info.context.board_id });
+```
+
+---
+
 ## Schema Sync
 
 On install/deploy, Core runs `CREATE SCHEMA IF NOT EXISTS` + `CREATE TABLE IF NOT EXISTS` for each entity in `dataContract`. Then `sync_schema` diffs DB vs manifest and auto-applies all changes (add/drop columns, alter types, nullability, defaults, check constraints). Studio shows a confirmation dialog before applying.

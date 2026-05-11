@@ -75,6 +75,36 @@ const client = useRuntimeClient();
 
 For imperative calls in event handlers. For reactive data, use `useAppCollection` / `useCoreCollection`.
 
+## Public Sharing
+
+```tsx
+// Owner creates a share (requires JWT + `public.share` permission)
+const share = await client.createPublicShare(appId, { context: { board_id: "..." } });
+// share.url = "https://.../share/<token>", share.token = raw 43-char token (shown once)
+
+// Owner lists/revokes
+const shares = await client.listPublicShares(appId);  // → PublicShareListing[]
+await client.revokePublicShare(appId, shareId);
+```
+
+**Public visitor (no login):**
+
+```tsx
+// Construct an isolated client — never touches localStorage, never refreshes
+const client = new RuntimeClient({ accessToken: token, persist: false, autoRefresh: false });
+
+// Resolve what the share grants access to
+const info = await client.getPublicShareInfo(); // → { appId, context }
+
+// Call the app's public RPC (scope enforced by core)
+const data = await client.rpc(info.appId, "get_public_board", { board_id: info.context.board_id });
+```
+
+**Constructor flags:**
+- `accessToken?: string` — initial Bearer (share token or JWT)
+- `persist?: boolean` (default `true`) — if `false`, never read/write localStorage
+- `autoRefresh?: boolean` (default `true`) — if `false`, don't call `/auth/refresh` on 401
+
 ---
 
 ## Record shape

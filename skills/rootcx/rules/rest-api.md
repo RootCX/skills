@@ -52,3 +52,21 @@ Base: `/api/v1/apps/{app_id}/jobs` — POST `/`, GET `/`, GET `/{job_id}`.
 **Job statuses:** `pending` → `running` → `completed` | `failed`
 
 Use jobs for long-running work (bulk fetches, batch imports, async syncs) that would exceed the 30s RPC timeout.
+
+## Public Shares
+
+Base: `/api/v1/apps/{app_id}/public-shares` (requires JWT + `app:{app_id}:public.share` permission)
+
+| Method | Path | Body | Response |
+|--------|------|------|----------|
+| POST | `/` | `{context:{...}}` | `{id,url,token,tokenPrefix,context,createdAt}` (201) |
+| GET | `/` | — | `ShareListing[]` (owner-scoped) |
+| DELETE | `/{id}` | — | `{message}` (creator-only) |
+
+**Public endpoint (no JWT, share token as Bearer):**
+
+| Method | Path | Auth | Response |
+|--------|------|------|----------|
+| GET | `/api/v1/public/share/info` | Bearer: share token | `{appId, context}` |
+
+**RPC with share token:** `POST /api/v1/apps/{app_id}/rpc` with Bearer = share token. Only works if the method is declared in `manifest.public.rpcs`. Core enforces `scope` match before dispatch.

@@ -38,6 +38,47 @@ const client = useRuntimeClient();
 const result = await client.rpc(appId, "method_name", { ...params });
 ```
 
+## serve() API (recommended)
+
+Use `serve()` instead of raw stdin/stdout parsing. It's injected by the runtime prelude.
+
+```typescript
+serve({
+  rpc: {
+    ping: () => ({ pong: true }),
+    get_data: async (params, caller, ctx) => {
+      const items = await ctx.collection("items").find({ status: "active" });
+      return items;
+    },
+  },
+  onJob: async (payload, caller, ctx) => { /* handle async job */ },
+});
+```
+
+### ctx.collection(entity)
+
+- `insert(data)` → created record
+- `update(data)` → updated record (must include `id`)
+- `find(where?)` → array of matching records (empty `{}` = full scan)
+- `findOne(where?)` → single record or `null`
+
+`where` is an equality map: `{ field: value }` → `WHERE field = value AND ...`
+
+### Public RPCs
+
+When a manifest declares `"public": { "rpcs": [{ "name": "get_public_board", "scope": ["board_id"] }] }`, the core enforces scope-match BEFORE the RPC handler runs. The handler does NOT need to verify `caller` or check the share context — just query the data using the params.
+
+```typescript
+get_public_board: async (params: { board_id: string }, _caller, ctx) => {
+  // Core already verified params.board_id matches the share token's context
+  const board = await ctx.collection("board").findOne({ id: params.board_id });
+  const lists = await ctx.collection("list").find({ board_id: params.board_id });
+  return { board, lists };
+},
+```
+
+---
+
 ## Minimal worker template
 
 ```typescript
