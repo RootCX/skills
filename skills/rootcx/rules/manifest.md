@@ -79,6 +79,38 @@ Worker receives in `onJob` same as one-shot jobs. Core adds `cron_id` to payload
 
 ---
 
+## Webhooks
+
+Declarative inbound webhook endpoints. Core syncs tokens on deploy (create/update/delete orphans).
+
+```json
+"webhooks": [
+  { "name": "hubspot", "method": "onHubspotDeal" },
+  { "name": "stripe", "method": "onStripePayment" }
+]
+```
+
+Fields: `name` (required, unique per app), `method` (required, RPC method to invoke on the worker).
+
+Core generates a unique 64-char token per webhook. Retrieve URLs via `GET /api/v1/apps/{app_id}/webhooks`. Configure the external service (HubSpot, Stripe, etc.) to POST to `https://<host>/api/v1/hooks/{token}`.
+
+Worker receives a standard RPC call on the declared method:
+
+```typescript
+serve({
+  rpc: {
+    onHubspotDeal({ name, headers, body, rawBody }, caller, ctx) {
+      // name = "hubspot", headers = HTTP headers, body = parsed JSON, rawBody = base64
+      // Verify signature: headers["x-hub-signature-256"]
+    },
+  },
+});
+```
+
+Tokens are stable across re-deploys. Removing a webhook from the manifest deletes it (and its token) on next deploy.
+
+---
+
 ## Public Access
 
 Declare which RPCs and collections are accessible without authentication.

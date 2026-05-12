@@ -1,6 +1,6 @@
 ---
 name: rootcx
-description: Build internal apps and AI agents on RootCX — the open-source platform with shared PostgreSQL, auto-generated CRUD APIs, OIDC SSO, role-based access control, audit logging, scheduled jobs, message queuing, encrypted secrets, file storage, managed deployment, and pre-built integrations. Get everything you need to ship internal tools to production out of the box.
+description: Build internal apps and AI agents on RootCX — the open-source platform with shared PostgreSQL, auto-generated CRUD APIs, OIDC SSO, role-based access control, audit logging, scheduled jobs, inbound webhooks, message queuing, encrypted secrets, file storage, managed deployment, and pre-built integrations. Get everything you need to ship internal tools to production out of the box.
 license: Apache-2.0
 compatibility: Requires the RootCX CLI (curl -fsSL https://rootcx.com/install.sh | sh)
 metadata:
@@ -23,4 +23,5 @@ RootCX is a low-code platform with a Rust/Axum Core, a Studio IDE, and an embedd
 - [REST API — Integrations](./rules/rest-api-integrations.md) — bind, actions, auth
 - [REST API — Storage](./rules/rest-api-storage.md) — file upload/download/delete
 - [REST API — Jobs](./rules/rest-api-jobs.md) — async job queue
+- [REST API — Webhooks](./rules/rest-api-webhooks.md) — inbound webhook endpoints
 - [AI Agent](./rules/agent.md) — LangGraph backend, agent.json config, SSE invoke
