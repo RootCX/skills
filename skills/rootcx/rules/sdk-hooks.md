@@ -75,6 +75,26 @@ const client = useRuntimeClient();
 
 For imperative calls in event handlers. For reactive data, use `useAppCollection` / `useCoreCollection`.
 
+## invokeAgent
+
+```tsx
+const client = useRuntimeClient();
+const result = await client.invokeAgent(agentAppId, {
+  message: "Analyse this document",
+  sessionId: "optional-uuid",  // omit for new session
+  fileIds: ["file-uuid"],      // optional attachments
+}, (event) => {
+  // event.type: "chunk" | "done" | "error" | "tool_call_started" | "tool_call_completed" | "approval_required" | "session_compacted" | "sub_agent_chunk"
+  if (event.type === "chunk") appendToUI(event.delta);
+}, abortController.signal);  // optional AbortSignal
+
+// result: AgentDoneEvent { type: "done", response, sessionId, tokens }
+```
+
+Call any deployed agent from any app. Streams SSE events via callback, resolves with the final response. Throws `RuntimeApiError` on HTTP failure or if the agent emits an error event without completing.
+
+**Types:** `InvokeAgentOptions`, `AgentEvent`, `AgentDoneEvent`, `AgentChunkEvent`, `AgentErrorEvent`, `AgentToolCallStartedEvent`, `AgentToolCallCompletedEvent`, `AgentApprovalRequiredEvent`, `AgentSessionCompactedEvent`, `AgentSubAgentChunkEvent` — all exported from `@rootcx/sdk`.
+
 ## Public Sharing
 
 ```tsx

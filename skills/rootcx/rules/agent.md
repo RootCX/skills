@@ -56,11 +56,27 @@ To give an agent new capabilities: add action to manifest + implement RPC handle
 
 ## Invocation
 
-```
-POST /api/v1/apps/{app_id}/agent/invoke
-{ "message": "...", "session_id": "optional-uuid" }
+**From SDK (any app calling an agent):**
+
+```tsx
+const client = useRuntimeClient();
+const result = await client.invokeAgent("agent-app-id", {
+  message: "...",
+  sessionId: "optional-uuid",
+  fileIds: ["optional-file-uuid"],
+}, (event) => {
+  if (event.type === "chunk") appendToUI(event.delta);
+});
+// result.response = final text, result.tokens = usage
 ```
 
-SSE events: `chunk`, `tool_call_started`, `tool_call_completed`, `approval_required`, `done`, `error`.
+**Raw HTTP:**
+
+```
+POST /api/v1/apps/{app_id}/agent/invoke
+{ "message": "...", "session_id": "optional-uuid", "file_ids": ["uuid"] }
+```
+
+SSE events: `chunk`, `tool_call_started`, `tool_call_completed`, `approval_required`, `session_compacted`, `sub_agent_chunk`, `done`, `error`.
 
 Other: `GET .../agent` (config), `GET .../agent/sessions` (list), `GET .../agent/sessions/{id}` (detail).
