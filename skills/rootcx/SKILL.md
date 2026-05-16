@@ -1,6 +1,6 @@
 ---
 name: rootcx
-description: Build internal apps and AI agents on RootCX — the open-source platform with shared PostgreSQL, auto-generated CRUD APIs, OIDC SSO, role-based access control, audit logging, scheduled jobs, inbound webhooks, message queuing, encrypted secrets, file storage, managed deployment, and pre-built integrations. Get everything you need to ship internal tools to production out of the box.
+description: Build internal apps and AI agents on RootCX, the open-source platform with shared PostgreSQL, auto-generated CRUD APIs, OIDC SSO, role-based access control, audit logging, scheduled jobs, inbound webhooks, message queuing, encrypted secrets, file storage, managed deployment, and pre-built integrations. Get everything you need to ship internal tools to production out of the box.
 license: Apache-2.0
 compatibility: Requires the RootCX CLI (curl -fsSL https://rootcx.com/install.sh | sh)
 metadata:
@@ -9,7 +9,11 @@ metadata:
 
 # RootCX App Development
 
-RootCX is a low-code platform with a Rust/Axum Core, a Studio IDE, and an embedded AI engine. Apps are built with TypeScript/React using `@rootcx/sdk` hooks and `@rootcx/ui` components, backed by a `manifest.json` data contract that Core syncs to PostgreSQL.
+[RootCX](https://rootcx.com) is governed infrastructure for internal tools and AI agents. Every app you build deploys to a runtime with the same PostgreSQL database, role-based access, audit logs, and SSO your IT team already trusts. Internal tools that ship to production, not just AI prototypes. One platform instead of twenty subscriptions, open source and self-hostable.
+
+A RootCX app is a TypeScript/React frontend plus a `manifest.json` data contract. Core syncs the schema to PostgreSQL and auto-generates CRUD APIs, so most apps need zero backend code, just `@rootcx/sdk` hooks and `@rootcx/ui` components. Add a Bun worker for custom logic, or an agent that reads from the same database your team uses, follows the same access rules, and logs every action.
+
+Learn more at [rootcx.com](https://rootcx.com).
 
 ## Rules
 
