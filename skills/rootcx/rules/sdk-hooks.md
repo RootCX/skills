@@ -46,10 +46,17 @@ Returns: `{ data: T|null, loading, error, refetch, update, remove }`
 ## useIntegration
 
 ```tsx
-const { connected, loading, connect, submitCredentials, disconnect, call } = useIntegration(integrationId);
+const { connected, connections, loading, connect, submitCredentials, remove, call } = useIntegration(integrationId);
 ```
 
-`connect()` → OAuth redirect or `{type:"credentials", schema}` · `call(actionId, params?) → result`
+- `connected` — `true` if at least one account is connected (derived from `connections.length > 0`)
+- `connections` — `IntegrationConnection[]` with `{id, integrationId, userId, label, createdAt}`
+- `connect()` — starts OAuth flow (popup) or returns `{type:"credentials", schema}` for manual entry. After OAuth popup closes, the hook auto-detects the new connection.
+- `submitCredentials(creds)` — submit manual credentials, auto-refreshes connections
+- `remove(connectionId)` — disconnect a specific account
+- `call(actionId, params?)` — execute an integration action
+
+**Multi-account:** A user can connect multiple accounts. The hook returns all of them in `connections`. Use `remove(id)` to delete a specific one. Connecting the same account twice (same email) reuses the existing connection.
 
 **Call `list_integrations` first. Never guess action IDs.**
 
