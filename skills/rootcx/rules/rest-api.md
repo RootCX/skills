@@ -53,6 +53,36 @@ Base: `/api/v1/apps/{app_id}/jobs` — POST `/`, GET `/`, GET `/{job_id}`.
 
 Use jobs for long-running work (bulk fetches, batch imports, async syncs) that would exceed the 30s RPC timeout.
 
+## Magic-Link Invitations
+
+Invite users to the app without passwords. The admin generates a secure one-time link, delivers it (email, Slack, etc.), and the recipient clicks to get a JWT.
+
+| Method | Path | Auth | Body | Response |
+|--------|------|------|------|----------|
+| POST | `/api/v1/auth/magic-link/generate` | Bearer (requires `auth.invite` permission) | `GenerateRequest` | `{magicLinkUrl, expiresAt}` (201) |
+| POST | `/api/v1/auth/magic-link/consume` | None (anonymous) | `{token}` | `{accessToken, refreshToken, expiresIn, user, redirectUri}` |
+| GET | `/api/v1/auth/magic-link/consume?token=...` | None | — | Redirect to `redirectUri#access_token=...&refresh_token=...&expires_in=...` (fragment, never in server logs or Referer) |
+
+**GenerateRequest:**
+
+```json
+{
+  "email": "marie@company.com",
+  "roles": ["sales"],
+  "redirectUri": "https://myapp.rootcx.com/dashboard",
+  "expiresInSeconds": 900
+}
+```
+
+- `email` (required) normalized to lowercase
+- `roles` RBAC roles to assign on consume. Caller must hold these roles (privilege containment) or be admin
+- `redirectUri` (optional) returned to consumer or used as redirect in GET flow. Must be http(s), no credentials
+- `expiresInSeconds` (optional) 60 to 86400, default 900 (15 min)
+
+**Security:** Tokens are 256-bit CSPRNG, stored as SHA-256 hash, single-use (atomic UPDATE), constant-time verification.
+
+**Permission:** The caller needs either admin (`*`) or the `auth.invite` permission. Non-admins can only confer roles they already hold.
+
 ## Public Shares
 
 Base: `/api/v1/apps/{app_id}/public-shares` (requires JWT + `app:{app_id}:public.share` permission)

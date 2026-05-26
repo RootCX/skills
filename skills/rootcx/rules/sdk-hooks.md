@@ -102,6 +102,33 @@ Call any deployed agent from any app. Streams SSE events via callback, resolves 
 
 **Types:** `InvokeAgentOptions`, `AgentEvent`, `AgentDoneEvent`, `AgentChunkEvent`, `AgentErrorEvent`, `AgentToolCallStartedEvent`, `AgentToolCallCompletedEvent`, `AgentApprovalRequiredEvent`, `AgentSessionCompactedEvent`, `AgentSubAgentChunkEvent` — all exported from `@rootcx/sdk`.
 
+## Magic-Link Invitations
+
+Two flows for inviting users:
+
+**Flow A — Core redirect (recommended).** Generate with a `redirectUri` pointing to your app. The invitee clicks the `magicLinkUrl`, Core consumes the token and redirects to your app with tokens in the URL fragment (`#access_token=...`). `useAuth()` picks them up automatically — no extra code needed.
+
+**Flow B — App-managed consume.** Generate without `redirectUri`. Send your own link (e.g. `https://yourapp.com/invite?token=<raw>`). The app reads the token and calls `magicLinkConsume(token)` explicitly:
+
+```tsx
+function InvitePage() {
+  const { magicLinkConsume, user } = useAuth();
+  const [params] = useSearchParams();
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const t = params.get("token");
+    if (t && !user) magicLinkConsume(t).catch((e) => setError(e.message));
+  }, []);
+
+  if (user) return <Navigate to="/" replace />;
+  if (error) return <p>Link expired or already used.</p>;
+  return <p>Joining...</p>;
+}
+```
+
+**Generate** (admin/worker side): `POST /api/v1/auth/magic-link/generate` with `{email, roles, redirectUri?}`. Returns `{magicLinkUrl}`. Requires `auth.invite` permission. See [REST API](./rest-api.md#magic-link-invitations).
+
 ## Public Sharing
 
 ```tsx
