@@ -1,40 +1,49 @@
 ---
 name: rootcx
-description: Build internal apps and AI agents on RootCX, the open-source platform with shared PostgreSQL, auto-generated CRUD APIs, OIDC SSO, role-based access control, audit logging, scheduled jobs, inbound webhooks, message queuing, encrypted secrets, file storage, managed deployment, and pre-built integrations. Get everything you need to ship internal tools to production out of the box.
+description: Build internal apps and AI agents on RootCX, the open-source platform with shared PostgreSQL, auto-generated CRUD APIs, OIDC SSO, role-based access control, audit logging, scheduled jobs, inbound webhooks, message queuing, encrypted secrets, file storage, managed deployment, and pre-built integrations. Use when building, modifying, or reviewing any RootCX application — including frontends, manifests, backends, agents, integrations, or deployment.
 license: Apache-2.0
 compatibility: Requires the RootCX CLI (curl -fsSL https://rootcx.com/install.sh | sh)
 metadata:
-  version: 0.2.0
+  version: 0.3.0
 ---
 
-# RootCX App Development
+RootCX changes frequently. Your training data may be outdated. Verify against the live documentation before implementing. Any doc page is available as raw markdown by appending `.md` to the URL (e.g., `https://rootcx.com/docs/developers/manifests.md`).
 
-[RootCX](https://rootcx.com) is governed infrastructure for internal tools and AI agents. Every app you build deploys to a runtime with the same PostgreSQL database, role-based access, audit logs, and SSO your IT team already trusts.
+## Integration routing
 
-A RootCX app is a TypeScript/React frontend plus a `manifest.json` data contract. Core syncs the schema to PostgreSQL and auto-generates CRUD APIs, so most apps need zero backend code, just `@rootcx/sdk` hooks and `@rootcx/ui` components. Add a Bun worker for custom logic, or an agent that reads from the same database your team uses.
+| Building... | Start here | Reference |
+|---|---|---|
+| App with entities and CRUD UI | Manifest + SDK hooks | [references/data.md](references/data.md) |
+| Backend logic, RPC handlers, jobs | `serve()` API + worker lifecycle | [references/backend.md](references/backend.md) |
+| AI agent with tools and supervision | agent.json + LangGraph backend | [references/agents.md](references/agents.md) |
+| Integration with external API | OAuth, actions, credentials | [references/integrations.md](references/integrations.md) |
+| Frontend layout, components, routing | `@rootcx/ui` + Tailwind v4 | [references/ui.md](references/ui.md) |
+| Component props and catalogue | Full prop signatures | [references/ui-components.md](references/ui-components.md) |
 
-## Reference (fetch from docs)
+Read the relevant reference file before writing code.
 
-Before generating code, fetch the relevant documentation pages. Append `.md` to any doc URL to get the raw markdown source.
+## Key documentation
+
+When the task does not fit a single domain above, fetch the specific doc page:
 
 | Topic | URL |
 |-------|-----|
-| Manifest (entities, fields, types, schema sync, actions, crons, webhooks, public access, indexes, checks) | `https://rootcx.com/docs/developers/manifests.md` |
-| React SDK (hooks, components, RuntimeClient, QueryOptions, types) | `https://rootcx.com/docs/developers/sdk.md` |
-| Backend workers (serve API, ctx, lifecycle hooks, RPC, jobs, deploy) | `https://rootcx.com/docs/developers/backend.md` |
-| AI agents (agent.json, tools, supervision, invoke, sessions, triggers) | `https://rootcx.com/docs/build/agent.md` |
-| Data API (CRUD endpoints, query operators, filtering, pagination) | `https://rootcx.com/docs/platform/data.md` |
-| Integrations (actions, OAuth, credentials, connections, delegation) | `https://rootcx.com/docs/build/integration.md` |
-| Storage (platform buckets + app files + nonce uploads) | `https://rootcx.com/docs/platform/storage.md` |
-| Authentication (JWT, OIDC, magic links, sessions) | `https://rootcx.com/docs/platform/authentication.md` |
-| Job queue (enqueue, dispatch, statuses) | `https://rootcx.com/docs/platform/jobs.md` |
-| Webhooks (tokens, ingress, worker handler) | `https://rootcx.com/docs/platform/webhooks.md` |
-| RBAC (roles, permissions, wildcards, API) | `https://rootcx.com/docs/governance/rbac.md` |
+| Manifest reference | `https://rootcx.com/docs/developers/manifests.md` |
+| React SDK (all hooks + RuntimeClient) | `https://rootcx.com/docs/developers/sdk.md` |
+| Backend workers (serve, ctx, deploy) | `https://rootcx.com/docs/developers/backend.md` |
+| Data API (CRUD, query operators) | `https://rootcx.com/docs/platform/data.md` |
+| AI agents (tools, supervision, invoke) | `https://rootcx.com/docs/build/agent.md` |
+| Integrations (OAuth, actions, connections) | `https://rootcx.com/docs/build/integration.md` |
+| Storage (buckets + app files + nonces) | `https://rootcx.com/docs/platform/storage.md` |
+| Authentication (JWT, OIDC, magic links) | `https://rootcx.com/docs/platform/authentication.md` |
+| Webhooks | `https://rootcx.com/docs/platform/webhooks.md` |
+| Jobs | `https://rootcx.com/docs/platform/jobs.md` |
+| RBAC | `https://rootcx.com/docs/governance/rbac.md` |
 
-Fetch only the pages relevant to the task. Do not fetch all pages for every request.
+## Core principles
 
-## Rules (always loaded)
-
-- [UI & Styling](./rules/ui.md) — components, layout, routing, dark mode, patterns
-- [UI Components](./rules/ui-components.md) — full component catalogue with prop signatures
-- [Craft Rules](./rules/craft.md) — behavioral rules, constraints, and code generation guidance
+1. **All data from hooks.** Never `useState` with mock data. Types come from `@rootcx/sdk`.
+2. **Manifest is the source of truth.** Entities, permissions, actions, crons, webhooks — declare everything in `manifest.json`. Core derives the rest.
+3. **PostgreSQL only.** Never SQLite, never file-based storage. All apps share one PG instance.
+4. **`serve()` for backends.** Never write raw stdin/stdout IPC unless building a custom LangGraph agent backend.
+5. **RBAC is structural.** Permissions are enforced by the Core in PostgreSQL (RLS), not in app code.
