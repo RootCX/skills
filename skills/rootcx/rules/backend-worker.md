@@ -20,7 +20,7 @@ Core sends `discover` immediately after spawn. Worker listens on stdin, responds
 - `{ type: "job_result", id, result }` or `{ type: "job_result", id, error }`
 - `{ type: "log", level: "info"|"warn"|"error", message }` — structured logging
 
-**Caller shape:** `{ userId: string, username: string, authToken?: string }`
+**Caller shape:** `{ userId: string, email: string, authToken?: string }`
 - `authToken` is the caller's JWT — use it for `Authorization: Bearer` when calling Core REST API
 - Always check `caller` for authorization in RPC handlers
 
@@ -85,7 +85,7 @@ get_public_board: async (params: { board_id: string }, _caller, ctx) => {
 import { createInterface } from "readline";
 import postgres from "postgres";
 
-interface Caller { userId: string; username: string; authToken?: string }
+interface Caller { userId: string; email: string; authToken?: string }
 
 const write = (m: any) => process.stdout.write(JSON.stringify(m) + "\n");
 const rl = createInterface({ input: process.stdin });
@@ -134,4 +134,4 @@ async function dispatch(method: string, params: any, caller: Caller | null): Pro
 - Entry point: `index.ts` → `index.js` → `main.ts` → `main.js` → `src/index.ts`
 - RPC timeout: 30s. Always respond with matching `id`
 - Use `caller.authToken` for authenticated Core API calls from the worker
-- Crash recovery: max 5 crashes in 60s → failed state
+- Crash recovery: max 5 crashes in 60s → crashed state

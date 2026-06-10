@@ -6,7 +6,7 @@ Base: `/api/v1/apps/{app_id}/jobs`
 
 | Method | Path | Body | Response |
 |--------|------|------|----------|
-| POST | `/` | `{payload:{...}}` | `{job_id}` (201) |
+| POST | `/` | `{payload:{...}}` | `{msg_id}` (201) |
 | GET | `/` | — | `Job[]` (query: `status`, `limit`) |
 | GET | `/{job_id}` | — | `Job` |
 
