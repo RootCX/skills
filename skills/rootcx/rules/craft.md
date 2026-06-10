@@ -51,6 +51,69 @@ Most apps use `serve()`. For manual IPC (e.g., custom agent backends):
 - `{ type: "job_result", id, result }` or `{ type: "job_result", id, error }`
 - `{ type: "log", level: "info"|"warn"|"error", message }`
 
+## Raw IPC worker template
+
+For custom agent backends or manual workers that don't use `serve()`:
+
+```typescript
+import { createInterface } from "readline";
+import postgres from "postgres";
+
+interface Caller { userId: string; email: string; authToken?: string }
+
+const write = (m: any) => process.stdout.write(JSON.stringify(m) + "\n");
+const rl = createInterface({ input: process.stdin });
+let sql: ReturnType<typeof postgres>;
+let runtimeUrl: string;
+let appId: string;
+
+rl.on("line", (l) => {
+  let m: any;
+  try { m = JSON.parse(l); } catch { return; }
+
+  switch (m.type) {
+    case "discover":
+      appId = m.app_id;
+      runtimeUrl = m.runtime_url;
+      sql = postgres(m.database_url);
+      write({ type: "discover", methods: ["ping"] });
+      break;
+    case "rpc":
+      handleRpc(m);
+      break;
+    case "shutdown":
+      process.exit(0);
+  }
+});
+
+async function handleRpc(m: any) {
+  try {
+    const result = await dispatch(m.method, m.params ?? {}, m.caller);
+    write({ type: "rpc_response", id: m.id, result });
+  } catch (e: any) {
+    write({ type: "rpc_response", id: m.id, error: e.message });
+  }
+}
+
+async function dispatch(method: string, params: any, caller: Caller | null): Promise<any> {
+  switch (method) {
+    case "ping": return { pong: true };
+    default: throw new Error(`unknown method: ${method}`);
+  }
+}
+```
+
+## Public Shares (REST)
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| POST | `/api/v1/apps/{app_id}/public-shares` | JWT + `app:{app_id}:public.share` | Create share → `{id, url, token, tokenPrefix, context, createdAt}` (token shown once) |
+| GET | `/api/v1/apps/{app_id}/public-shares` | JWT + `app:{app_id}:public.share` | List caller's active shares |
+| DELETE | `/api/v1/apps/{app_id}/public-shares/{id}` | JWT (creator only) | Revoke a share |
+| GET | `/api/v1/public/share/info` | Bearer = share token | Resolve `{appId, context}` |
+
+RPC with share token: `POST /api/v1/apps/{app_id}/rpc` with Bearer = share token. Only works if the method is declared in `manifest.public.rpcs`. Core enforces `scope` match before dispatch.
+
 ## Integrations
 
 - Call `list_integrations` first. Never guess action IDs.
@@ -59,6 +122,7 @@ Most apps use `serve()`. For manual IPC (e.g., custom agent backends):
 
 ## Agents
 
+- Agent project structure includes `src/App.tsx` (React chat UI) + `.rootcx/launch.json` alongside `manifest.json`, `agent.json`, `agent/system.md`, and `backend/`
 - Backend deps: `@langchain/langgraph`, `@langchain/core`, provider package (`@langchain/anthropic` | `@langchain/openai`), `zod`
 - IPC bridge: JSON-lines stdin/stdout connects agent worker to Core
 - Provider SDKs: `ChatAnthropic` / `ChatOpenAI` / `ChatBedrockConverse`
