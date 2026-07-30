@@ -1,0 +1,20 @@
+{
+  "name": "rootcx",
+  "interface": {
+    "displayName": "RootCX"
+  },
+  "plugins": [
+    {
+      "name": "rootcx",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

@@ -23,6 +23,15 @@ Single `rootcx` skill with rules loaded on demand:
 
 The public RootCX plugin bundles this skill with the official authenticated MCP server. Install RootCX from the Plugin Directory, select **Connect**, sign in to RootCX, and choose the workspace the assistant may use. When the CLI is missing, the skill asks once for installation approval and runs its bundled checksum-verifying installer. Application source, builds, tests, and deployment stay in the local workspace.
 
+Until RootCX is available in the public Plugin Directory, add the official marketplace in ChatGPT Work:
+
+1. Open **Plugins**, then select **Create → Add marketplace**.
+2. Use `RootCX/skills` as the source.
+3. Use `master` as the Git ref and leave sparse paths empty.
+4. Open the **RootCX** marketplace and install **RootCX**.
+
+The installed plugin includes both the RootCX skill and the authenticated MCP connection. Users do not enter an MCP URL manually.
+
 ## Skills-compatible coding agents
 
 **Claude Code:**
