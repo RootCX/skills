@@ -1,7 +1,7 @@
 {
   "name": "rootcx",
-  "version": "0.5.4",
-  "description": "Work with RootCX and build applications securely in your local workspace.",
+  "version": "0.5.5",
+  "description": "Ship RootCX apps and AI agents from your assistant. RootCX handles the production stack.",
   "author": {
     "name": "RootCX",
     "email": "contact@rootcx.com",
@@ -20,8 +20,8 @@
   "mcpServers": "./.mcp.json",
   "interface": {
     "displayName": "RootCX",
-    "shortDescription": "Build local apps and work with RootCX.",
-    "longDescription": "Connect to your RootCX workspace, inspect applications, validate manifests, and create approved records. The RootCX skill installs and uses the local CLI for scaffolding, builds, tests, and deployment so application source stays on your machine.",
+    "shortDescription": "Ship apps and AI agents from your assistant. RootCX handles the stack.",
+    "longDescription": "Build with ChatGPT Work or Codex. RootCX gives every app and AI agent PostgreSQL, SSO, permissions, audit logs, integrations, secrets, jobs, and deployment from day one. Keep building, work with live app data, and make approved changes in the same conversation. Source code stays on your machine. Every action follows your RootCX permissions and remains auditable.",
     "developerName": "RootCX",
     "category": "Productivity",
     "capabilities": [

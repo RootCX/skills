@@ -1,9 +1,9 @@
 ---
 name: rootcx
-description: Build internal apps and AI agents on RootCX, the open-source platform with shared PostgreSQL, auto-generated CRUD APIs, OIDC SSO, role-based access control, audit logging, scheduled jobs, inbound webhooks, message queuing, encrypted secrets, file storage, managed deployment, and pre-built integrations. Use when building, modifying, or reviewing any RootCX application — including frontends, manifests, backends, agents, integrations, or deployment.
+description: Build, deploy, use, and improve production-ready internal apps and AI agents on RootCX. RootCX provides shared PostgreSQL, SSO, role-based permissions, audit logs, jobs, integrations, secrets, storage, and managed deployment. Use for any RootCX app, frontend, manifest, backend worker, AI agent, integration, data workflow, or deployment.
 license: Apache-2.0
 metadata:
-  version: 0.5.2
+  version: 0.5.5
 ---
 
 RootCX changes frequently. Your training data may be outdated. Verify against the live documentation before implementing. Any doc page is available as raw markdown by appending `.md` to the URL (e.g., `https://rootcx.com/docs/developers/manifests.md`).
@@ -46,6 +46,18 @@ If local command execution is unavailable, explain that building requires ChatGP
 `get_project_context.onboarding.firstAppDeployed` is the authoritative activation state. Do not infer onboarding from the number of installed apps because a tenant may contain system or prebuilt applications.
 
 For an existing app, call `get_app` before proposing changes and work from its local source directory. Use `create_records` only for user-approved initial data; never fabricate real customer or company data.
+
+## Using live application data
+
+When the user wants to use an existing RootCX app rather than change its code:
+
+1. Call `get_project_context`, then `get_app` for the selected app so the app ID, entities, fields, and current permissions are known.
+2. Complete the CLI installation and workspace authentication checks from the local CLI workflow above. The CLI must authenticate independently to the exact `workspace.url`; never copy MCP tokens into it.
+3. Use `rootcx data list`, `rootcx data query`, or `rootcx data get` for reads. Query only the fields and records required for the user's request.
+4. Before `rootcx data create`, `rootcx data update`, or `rootcx data delete`, show the intended change and obtain explicit approval. Never invent record values or broaden the requested mutation.
+5. Run the approved command without bypassing RootCX permissions. Summarize what changed and report any rejected records or authorization errors exactly.
+
+Use the CLI data commands because they already call the governed RootCX data API and preserve the same authentication, permissions, row-level security, and audit trail as the application. Do not modify the database directly.
 
 ## Key documentation
 

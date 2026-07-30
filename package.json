@@ -1,7 +1,7 @@
 {
   "name": "@rootcx/skills",
-  "version": "0.5.4",
-  "description": "Agent Skills for building RootCX apps — manifest, SDK hooks, UI, backend workers, REST API, and AI agents",
+  "version": "0.5.5",
+  "description": "Official RootCX skill and MCP integration for building, deploying, and operating apps and AI agents",
   "type": "module",
   "license": "Apache-2.0",
   "repository": {

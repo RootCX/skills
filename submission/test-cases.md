@@ -41,6 +41,13 @@ cases run in ChatGPT Desktop Work with local command execution enabled.
 - **Expected result:** A `records` array containing the created records.
 - **Fixture:** CRM application with an opportunities entity and permission to create records.
 
+### 6. Use live application data
+
+- **Prompt:** Show me the overdue follow-ups in my CRM, then move the ones I choose to next week.
+- **Expected behavior:** Call `get_project_context`, then `get_app`; verify the local CLI is authenticated to the selected workspace; use `rootcx data query` to read only the required records; present the proposed dates; run `rootcx data update` only for records the user explicitly approves.
+- **Expected result:** The requested follow-ups are listed first. Only approved records are updated through the governed data API, and the assistant reports the resulting values or exact authorization errors.
+- **Fixture:** CRM application with dated follow-up records and permission to read and update them.
+
 ## Negative cases
 
 ### 1. No local command execution

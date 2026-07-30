@@ -4,7 +4,7 @@
 
 - **Name:** RootCX
 - **Category:** Productivity
-- **Short description:** Build local apps and work with RootCX.
+- **Short description:** Ship apps and AI agents from your assistant. RootCX handles the stack.
 - **Website:** https://rootcx.com
 - **Support:** https://rootcx.com/contact
 - **Privacy:** https://rootcx.com/privacy-policy
@@ -12,7 +12,7 @@
 
 ## Long description
 
-Connect to your RootCX workspace, inspect applications, validate manifests, and create approved records. The RootCX skill installs and uses the local CLI for scaffolding, builds, tests, and deployment, so application source stays on your machine. MCP actions use your existing RootCX permissions; data mutations remain attributed in the RootCX audit trail.
+Build with ChatGPT Work or Codex. RootCX gives every app and AI agent PostgreSQL, SSO, permissions, audit logs, integrations, secrets, jobs, and deployment from day one. Keep building, work with live app data, and make approved changes in the same conversation. Source code stays on your machine. Every action follows your RootCX permissions and remains auditable.
 
 ## MCP
 
@@ -39,4 +39,4 @@ Select only countries where RootCX cloud service, support, privacy terms, and th
 
 ## Release notes
 
-Initial public RootCX plugin. Includes the official RootCX local build skill and an authenticated universal MCP server for project context, manifest validation, and approved starter data.
+Build, deploy, and operate RootCX apps and AI agents from ChatGPT Work and Codex. The plugin keeps source and builds local, connects securely to your RootCX workspace, and gives the assistant governed access to live application data.
