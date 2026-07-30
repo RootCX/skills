@@ -29,9 +29,9 @@ Connect to your RootCX workspace, inspect applications, validate manifests, and 
 
 ## Starter prompts
 
-1. Build an internal CRM for my team in RootCX.
-2. Review my RootCX app and propose the next improvement.
-3. Create a project tracker and deploy it after I approve.
+1. Build an internal CRM for my team and deploy it to RootCX.
+2. Open my RootCX CRM, show me overdue follow-ups, and update the ones I choose.
+3. Create an AI support agent in RootCX that triages requests and drafts replies.
 
 ## Availability
 

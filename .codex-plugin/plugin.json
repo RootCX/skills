@@ -1,6 +1,6 @@
 {
   "name": "rootcx",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "description": "Work with RootCX and build applications securely in your local workspace.",
   "author": {
     "name": "RootCX",
@@ -32,9 +32,9 @@
     "privacyPolicyURL": "https://rootcx.com/privacy-policy",
     "termsOfServiceURL": "https://rootcx.com/terms-of-service",
     "defaultPrompt": [
-      "Build an internal CRM for my team in RootCX.",
-      "Review my RootCX app and propose the next improvement.",
-      "Create a project tracker and deploy it after I approve."
+      "Build an internal CRM for my team and deploy it to RootCX.",
+      "Open my RootCX CRM, show me overdue follow-ups, and update the ones I choose.",
+      "Create an AI support agent in RootCX that triages requests and drafts replies."
     ],
     "brandColor": "#439CFB",
     "composerIcon": "./assets/logo.png",
