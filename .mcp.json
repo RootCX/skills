@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "rootcx": {
+      "type": "http",
+      "url": "https://rootcx.com/mcp"
+    }
+  }
+}

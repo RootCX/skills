@@ -1,0 +1,43 @@
+{
+  "name": "rootcx",
+  "version": "0.5.2",
+  "description": "Work with RootCX and build applications securely in your local workspace.",
+  "author": {
+    "name": "RootCX",
+    "email": "contact@rootcx.com",
+    "url": "https://rootcx.com"
+  },
+  "homepage": "https://rootcx.com/docs/developers/mcp",
+  "repository": "https://github.com/RootCX/skills",
+  "license": "Apache-2.0",
+  "keywords": [
+    "rootcx",
+    "internal-apps",
+    "mcp",
+    "postgresql"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "RootCX",
+    "shortDescription": "Build local apps and work with RootCX.",
+    "longDescription": "Connect to your RootCX workspace, inspect applications, validate manifests, and create approved records. The RootCX skill installs and uses the local CLI for scaffolding, builds, tests, and deployment so application source stays on your machine.",
+    "developerName": "RootCX",
+    "category": "Productivity",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://rootcx.com",
+    "privacyPolicyURL": "https://rootcx.com/privacy-policy",
+    "termsOfServiceURL": "https://rootcx.com/terms-of-service",
+    "defaultPrompt": [
+      "Build an internal CRM for my team in RootCX.",
+      "Review my RootCX app and propose the next improvement.",
+      "Create a project tracker and deploy it after I approve."
+    ],
+    "brandColor": "#439CFB",
+    "composerIcon": "./assets/logo.png",
+    "logo": "./assets/logo.png"
+  }
+}
