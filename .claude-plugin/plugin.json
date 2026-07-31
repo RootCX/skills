@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "rootcx",
+  "displayName": "RootCX",
+  "version": "0.5.5",
+  "description": "Build, deploy, and operate governed internal apps and AI agents on RootCX.",
+  "author": {
+    "name": "RootCX",
+    "email": "contact@rootcx.com",
+    "url": "https://rootcx.com"
+  },
+  "homepage": "https://rootcx.com/docs/developers/mcp",
+  "repository": "https://github.com/RootCX/skills",
+  "license": "Apache-2.0",
+  "keywords": [
+    "rootcx",
+    "internal-apps",
+    "mcp",
+    "postgresql"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json"
+}

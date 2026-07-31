@@ -40,23 +40,26 @@ Until RootCX is available in the public Plugin Directory, add the official marke
 
 The installed plugin includes both the RootCX skill and the authenticated MCP connection. Users do not enter an MCP URL manually.
 
-## Skills-compatible coding agents
+## Claude Desktop, Cowork, and Claude Code
 
-**Claude Code:**
+Install the official RootCX marketplace from GitHub, then install the RootCX plugin:
+
+```text
+/plugin marketplace add RootCX/skills
+/plugin install rootcx@rootcx
+```
+
+The plugin installs the RootCX skill and connects Claude to the universal RootCX MCP server. Run `/mcp` when prompted and complete browser authentication. You do not enter a tenant-specific MCP URL or copy an access token.
+
+In Claude Desktop or Cowork, open **Customize → Plugins**, add `RootCX/skills` as a marketplace, then install **RootCX**. The skill and remote connector are available in Chat and Cowork. Build workflows require Cowork or Claude Code with access to a local project folder; regular Chat can use connected RootCX data but does not provide a local coding workspace.
+
+For other skills-compatible coding agents:
 
 ```bash
 npx skills add rootcx/rootcx-skills
 ```
 
-The same command installs the skill for clients that follow the cross-client `.agents/skills` convention. MCP provides authenticated actions, while the skill provides the RootCX build workflow.
-
-For Claude Code, connect the tenant first:
-
-```bash
-claude mcp add --transport http rootcx https://<tenant>.rootcx.com/mcp
-```
-
-Then run `/mcp` in Claude Code and complete the browser sign-in.
+The same command installs the skill for clients that follow the cross-client `.agents/skills` convention. Connect their MCP client to `https://rootcx.com/mcp` and complete OAuth separately.
 
 **npm (for Forge monolith build):**
 

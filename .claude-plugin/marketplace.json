@@ -1,0 +1,16 @@
+{
+  "name": "rootcx",
+  "description": "Official RootCX plugin for building, deploying, and operating governed internal apps and AI agents.",
+  "owner": {
+    "name": "RootCX",
+    "email": "contact@rootcx.com"
+  },
+  "plugins": [
+    {
+      "name": "rootcx",
+      "source": "./",
+      "description": "Build, deploy, and operate governed internal apps and AI agents on RootCX.",
+      "category": "productivity"
+    }
+  ]
+}

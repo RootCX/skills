@@ -41,7 +41,7 @@ When the official RootCX MCP server is available:
 9. Explain what will change and obtain explicit approval before deployment.
 10. Run `rootcx deploy` from the app directory. Treat any dependency, build, or Core manifest validation failure as a failed deployment and report it exactly; do not claim the app is deployed. On success, return `<workspace.url>/apps/<app-id>/` and ask the user to try the primary workflow.
 
-If local command execution is unavailable, explain that building requires ChatGPT Desktop Work in local mode or another local coding agent. Do not fall back to sending source code through MCP.
+If local command execution is unavailable, explain that building requires ChatGPT Desktop Work, Claude Cowork, Claude Code, or another local coding agent with access to a project folder. Do not fall back to sending source code through MCP.
 
 `get_project_context.onboarding.firstAppDeployed` is the authoritative activation state. Do not infer onboarding from the number of installed apps because a tenant may contain system or prebuilt applications.
 
