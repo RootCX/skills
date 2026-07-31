@@ -37,9 +37,9 @@ When the official RootCX MCP server is available:
 5. For a new app, ask only for the desired outcome, the people who will use it, and the information they must manage. Restate one concise user story and obtain agreement.
 6. Choose a stable app ID and run `rootcx new <app-id>` in the local workspace. Do not run bare `rootcx init`: it is the standalone account/workspace onboarding command and deploys its initial scaffold immediately.
 7. Read the relevant references and live documentation, then implement the app locally. Never invent manifest fields, SDK hooks, or UI components.
-8. Run the project's relevant local checks. Call `validate_manifest` with the completed `manifest.json` and fix every reported issue.
+8. Review the completed source and manifest against the relevant RootCX references. Do not run `npm install`, `bun install`, `npm run build`, `bun run build`, or equivalent package/build commands as a separate workflow step: `rootcx deploy` installs dependencies and builds the frontend locally before changing the workspace. Do not call `validate_manifest` during the normal build workflow; deployment sends the manifest to Core, which performs the authoritative validation. Use `validate_manifest` only when the user explicitly asks for a dry-run, when diagnosing a manifest error, or when inspecting schema drift without deploying.
 9. Explain what will change and obtain explicit approval before deployment.
-10. Run `rootcx deploy` from the app directory. Return `<workspace.url>/apps/<app-id>/` and ask the user to try the primary workflow.
+10. Run `rootcx deploy` from the app directory. Treat any dependency, build, or Core manifest validation failure as a failed deployment and report it exactly; do not claim the app is deployed. On success, return `<workspace.url>/apps/<app-id>/` and ask the user to try the primary workflow.
 
 If local command execution is unavailable, explain that building requires ChatGPT Desktop Work in local mode or another local coding agent. Do not fall back to sending source code through MCP.
 
