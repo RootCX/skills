@@ -49,9 +49,11 @@ Install the official RootCX marketplace from GitHub, then install the RootCX plu
 /plugin install rootcx@rootcx
 ```
 
-The plugin installs the RootCX skill and connects Claude to the universal RootCX MCP server. Run `/mcp` when prompted and complete browser authentication. You do not enter a tenant-specific MCP URL or copy an access token.
+In Claude Desktop or Cowork, open **Customize → Plugins**, add `RootCX/skills` as a marketplace, then install **RootCX**. Complete the RootCX browser sign-in shown during installation. The skill and universal RootCX connector are then ready together—no connector URL, tenant-specific endpoint, or access token required.
 
-In Claude Desktop or Cowork, open **Customize → Plugins**, add `RootCX/skills` as a marketplace, then install **RootCX**. The skill and remote connector are available in Chat and Cowork. Build workflows require Cowork or Claude Code with access to a local project folder; regular Chat can use connected RootCX data but does not provide a local coding workspace.
+Build workflows require Cowork or Claude Code with access to a local project folder. Regular Chat can use connected RootCX data but does not provide a local coding workspace.
+
+Claude Code uses its native MCP authentication screen. If it reports that RootCX needs authentication, run `/mcp`, select **RootCX**, and complete the browser sign-in once.
 
 For other skills-compatible coding agents:
 

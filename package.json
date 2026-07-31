@@ -1,6 +1,6 @@
 {
   "name": "@rootcx/skills",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "description": "Official RootCX skill and MCP integration for building, deploying, and operating apps and AI agents",
   "type": "module",
   "license": "Apache-2.0",
@@ -8,9 +8,13 @@
     "type": "git",
     "url": "https://github.com/RootCX/skills"
   },
+  "scripts": {
+    "test": "node scripts/validate-plugin.mjs"
+  },
   "files": [
     "skills",
     ".agents/plugins/marketplace.json",
+    ".claude-plugin",
     ".codex-plugin",
     ".mcp.json",
     "assets",
