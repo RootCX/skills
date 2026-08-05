@@ -59,6 +59,28 @@ const { data } = useCoreCollection<T>("users");
 - GET list params are flat, no bracket syntax: `?status=active&company_id=uuid`
 - Records are flat objects. On create/update, pass only user-defined fields (never `id`, `created_at`, `updated_at`).
 
+## Large collection imports
+
+`POST /bulk` is an interactive JSON endpoint for at most 1,000 rows. For a large source file, upload it to RootCX Storage, enqueue a background job, normalize rows in the worker, and stream them through the governed collection-import path:
+
+```ts
+await ctx.collection("catalog_offer").importRows(rows, {
+  mode: "append",
+  columns: ["import_run_id", "source_item_id", "description", "price"],
+  sourceFileId: fileId,
+  idempotencyKey: `${checksum}:mapping-v1`,
+});
+```
+
+- `rows` may be an `Iterable` or `AsyncIterable`; the worker streams CSV with backpressure and does not buffer the dataset.
+- Core supports `append`, `upsert`, and atomic `replace`. `upsert` also needs `conflictColumns` matching a non-partial unique index.
+- Existing permissions govern publication: `create` for append, `create+update` for upsert, and `create+update+delete` for replace. A linked source file also requires `storage.read`.
+- XLSX/CSV parsing, schema-drift checks, mapping, and business validation belong to the app. Core owns the temporary staging table, PostgreSQL `COPY`, RLS publication, progress, retry state, and summary audit event.
+- Use an idempotency key derived from the immutable source checksum and mapping version. An already-completed matching run is returned without uploading rows again.
+- Empty streams are rejected by default so an accidental empty `replace` cannot erase data. Set `allowEmpty: true` only for an intentionally empty publication.
+
+REST lifecycle: `GET|POST /api/v1/apps/{app_id}/collections/{entity}/imports`, `GET|DELETE .../imports/{id}`, and `POST .../imports/{id}/retry`.
+
 ## Public access
 
 - Routes NOT in `public` require a JWT (fail-closed, 401).
