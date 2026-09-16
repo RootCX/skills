@@ -51,7 +51,35 @@ const { data } = useCoreCollection<T>("users");
 
 - Without `query`: `GET` (no limit, returns all). With `query`: `POST /query` (default limit 100).
 - Auto re-fetches when `query` object changes.
-- Cross-app reads: pass any installed app's ID as `appId`. User needs read permissions.
+- Direct user cross-app reads: pass the provider's app ID as `appId`; that user's provider permissions and RLS still apply. This does not establish worker or agent grant authority.
+
+## Governed cross-app access
+
+Requires the Core implementation identified in `../SKILL.md`. For worker, agent, or workflow access, Core binds the consumer identity and requires an approved grant for that consumer installation, provider installation, and entity. Existing user RBAC permissions do not automatically create a grant.
+
+An authorized administrator creates a pending grant with `POST /api/v1/cross-app/grants`:
+
+```json
+{
+  "consumerApp": "sales",
+  "providerApp": "crm",
+  "entity": "contacts",
+  "actions": ["list", "read", "update"],
+  "fields": ["name", "email"],
+  "writeFields": ["email"],
+  "reason": "Allow sales to maintain contact email addresses"
+}
+```
+
+Creation requires `admin:cross_app.grants.manage`. Approval uses `POST /api/v1/cross-app/grants/<id>/approve` with `{"reason":"Approved by provider"}` and `admin:cross_app.grants.approve` or `app:crm:cross_app.approve`. These are HTTP endpoints, not manifest fields or assumed MCP tools.
+
+- Request only needed actions: `list`, `read`, `create`, `update`, and `delete` are independent.
+- `fields` freezes readable, filterable, and sortable fields; prefer an explicit nonempty list. `writeFields` is independently required and nonempty for create/update; omit it or use `[]` for read/delete-only grants. Sensitive fields are excluded; system fields cannot be written.
+- Grants do not widen provider RLS, ownership, delegated permissions, or task scope. A request-supplied app ID cannot impersonate the consumer. Cross-app writes are supported when all these checks pass.
+- Inspect grants via `GET /api/v1/cross-app/grants/<id>` and operations via `GET /api/v1/cross-app/audit` with the required administrative permissions. A denial is not a reason to broaden roles automatically.
+- Existing installations receive no automatic grants. Contract changes revoke old grants; only changes confined to top-level `name`, `version`, `description`, and `icon` retain them. Failed contract updates and uninstall/reinstall require fresh approvals.
+
+Use [backend.md](backend.md#cross-app-collections) for worker calls and [agents.md](agents.md#cross-app-tools-and-workflows) for tools and workflow migration. Collection grants do not authorize action calls or agent invocation.
 
 ## Traps to avoid
 

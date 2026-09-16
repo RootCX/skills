@@ -79,3 +79,24 @@ SSE event types: `chunk`, `tool_call_started`, `tool_call_completed`, `approval_
 - Agents get `admin` role by default on deploy. Restrict via the roles API if needed.
 - Sub-agents cannot spawn further sub-agents (single-level delegation).
 - An agent cannot invoke itself.
+
+## Cross-app tools and workflows
+
+Requires the Core implementation identified in `../SKILL.md`. Use Core-dispatched tools so supervision and task scope apply; raw `ctx.remote` and `ctx.enqueueJob` calls from agent workers are denied.
+
+| Tool | Arguments | Result / authority |
+|------|-----------|--------------------|
+| `query_data` | `{ app, entity, where?, orderBy?, order?, limit?, offset? }` | No query options: full array. Any query option: `{ data, total }`; `where: {}` explicitly requests a page. Remote access requires `list`, even when filtering by ID. |
+| `mutate_data` | `{ app, entity, action, id?, data? }` | Requires the exact mutation grant and writable fields; update/delete use an explicit ID. |
+| `call_action` | `{ app, action, input }` | Returns raw action result. Requires target `app:<app>:invoke` or `app:<app>:action:<action>`. |
+| `invoke_agent` | `{ app_id, message }` | Returns `{ agent, response }`. Requires target `app:<app>:invoke`; child authority is narrowed. |
+
+Every tool also requires `tool:<name>` within the delegated permission ceiling and task scope. Collection operations need provider operation permissions and preserve provider RLS; a grant never replaces these checks. Use explicit pagination for large reads; `query_data` without options has no implicit 100-row cap.
+
+Obtain grants using [data.md](data.md#governed-cross-app-access). For native workflows, the consumer is the Core-created `wf-<workflow UUID>` backing app. Existing cross-app workflows need explicit grants even if their users already have RBAC permissions.
+
+Workflow tool nodes use `kind: { "type": "tool", "toolName": "mutate_data" }` (or `query_data`) and put arguments in `params`. Durable workflow creates keep deterministic IDs on retry; `bulk_create` is unavailable there, so use per-item create nodes.
+
+`call_action`, `invoke_agent`, and `call_integration` require agent execution context and are unavailable in native workflow tool nodes or generic HTTP tool execution. New/updated graphs and enabling legacy graphs validate this restriction; review existing enabled workflows before upgrading. Collection grants cannot enable these tools. Ordinary worker `ctx.callIntegration` remains supported.
+
+To schedule work from an agent, use supervised `call_action` to an ordinary app action that enqueues a job; that app needs its own collection grants. See [backend.md](backend.md#queued-work-and-upgrades) for the queue migration.

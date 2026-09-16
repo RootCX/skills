@@ -10,20 +10,16 @@ Ship internal apps and AI agents from the assistant you already use. Build with 
 
 ## Structure
 
-Single `rootcx` skill with rules loaded on demand:
+Single `rootcx` skill with references loaded on demand from `skills/rootcx/references/`:
 
-| Rule | Description |
+| Reference | Description |
 |------|-------------|
-| `manifest` | Data contract, entities, field types, schema sync |
-| `sdk-hooks` | React hooks — useAppCollection, useAppRecord, queries |
-| `ui` | Components, layout, routing, dark mode, AuthGate |
-| `ui-components` | Full component catalogue with prop signatures |
-| `backend-worker` | Bun worker IPC protocol, RPC, jobs |
-| `rest-api` | Core HTTP API overview, where operators |
-| `rest-api-collections` | CRUD endpoints, query params |
-| `rest-api-integrations` | Bind, actions, auth |
-| `rest-api-jobs` | Async job queue |
-| `agent` | AI agent with LangGraph backend |
+| `data.md` | Manifest, React data hooks, imports, cross-app grants |
+| `backend.md` | Worker CRUD, cross-app access, RPC, jobs and upgrade constraints |
+| `agents.md` | AI agents, supervised tools and workflow governance |
+| `integrations.md` | External API integrations, credentials and actions |
+| `ui.md` | Components, layout, routing, dark mode, AuthGate |
+| `ui-components.md` | Full component catalogue with prop signatures |
 
 ## ChatGPT Work and Codex
 

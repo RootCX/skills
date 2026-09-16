@@ -21,6 +21,8 @@ RootCX changes frequently. Your training data may be outdated. Verify against th
 
 Read the relevant reference file before writing code.
 
+For governed cross-app CRUD, read [data.md](references/data.md#governed-cross-app-access), then the worker or agent reference for the executor in use. These instructions describe Core commit `890e715` (worker protocol v5); confirm the target Core includes that implementation before generating calls. A newer skill or CLI alone does not upgrade the tenant, and a commit on `main` is not a released capability. When live docs lag, use the target Core's `docs/cross-app-collections.md` and worker declarations; do not invent a minimum release version.
+
 ## Local CLI workflow
 
 Application source, builds, tests, and deployment always stay in the user's local workspace. MCP provides authenticated RootCX context and governed actions; it never receives application source code and never builds or deploys an app.
@@ -80,7 +82,7 @@ When the task does not fit a single domain above, fetch the specific doc page:
 ## Core principles
 
 1. **All data from hooks.** Never `useState` with mock data. Types come from `@rootcx/sdk`.
-2. **Manifest is the source of truth.** Entities, permissions, actions, crons, webhooks — declare everything in `manifest.json`. Core derives the rest.
+2. **Manifest defines the app contract.** Declare entities, permissions, actions, crons, and webhooks in `manifest.json`. Cross-app collection grants are separately approved in Core; installing an app does not grant access to another app.
 3. **PostgreSQL only.** Never SQLite, never file-based storage. All apps share one PG instance.
 4. **`serve()` for backends.** Never write raw stdin/stdout IPC unless building a custom LangGraph agent backend.
 5. **RBAC is structural.** Permissions are enforced by the Core in PostgreSQL (RLS), not in app code.
