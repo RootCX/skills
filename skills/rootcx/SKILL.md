@@ -3,7 +3,7 @@ name: rootcx
 description: Build, deploy, use, and improve production-ready internal apps and AI agents on RootCX. RootCX provides shared PostgreSQL, SSO, role-based permissions, audit logs, jobs, integrations, secrets, storage, and managed deployment. Use for any RootCX app, frontend, manifest, backend worker, AI agent, integration, data workflow, or deployment.
 license: Apache-2.0
 metadata:
-  version: 0.5.6
+  version: 0.5.7
 ---
 
 RootCX changes frequently. Your training data may be outdated. Verify against the live documentation before implementing. Any doc page is available as raw markdown by appending `.md` to the URL (e.g., `https://rootcx.com/docs/developers/manifests.md`).
