@@ -1,6 +1,6 @@
 {
   "name": "@rootcx/skills",
-  "version": "0.5.7",
+  "version": "0.6.0",
   "description": "Official RootCX skill and MCP integration for building, deploying, and operating apps and AI agents",
   "type": "module",
   "license": "Apache-2.0",

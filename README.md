@@ -16,6 +16,7 @@ Single `rootcx` skill with references loaded on demand from `skills/rootcx/refer
 |------|-------------|
 | `data.md` | Manifest, React data hooks, imports, cross-app grants |
 | `backend.md` | Worker CRUD, cross-app access, RPC, jobs and upgrade constraints |
+| `publications.md` | Core 0.26.0+ anonymous reads, provider approvals and disclosure limits |
 | `agents.md` | AI agents, supervised tools and workflow governance |
 | `integrations.md` | External API integrations, credentials and actions |
 | `ui.md` | Components, layout, routing, dark mode, AuthGate |
@@ -54,7 +55,7 @@ Claude Code uses its native MCP authentication screen. If it reports that RootCX
 For other skills-compatible coding agents:
 
 ```bash
-npx skills add rootcx/rootcx-skills
+npx skills add RootCX/skills
 ```
 
 The same command installs the skill for clients that follow the cross-client `.agents/skills` convention. Connect their MCP client to `https://rootcx.com/mcp` and complete OAuth separately.

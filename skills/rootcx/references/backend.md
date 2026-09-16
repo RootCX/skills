@@ -20,6 +20,9 @@ serve({
 
 ## ctx object
 
+The capabilities below describe ordinary workers. Publication-bound public RPCs
+have the restricted read-only context described in [publications.md](publications.md).
+
 | Property | Usage |
 |----------|-------|
 | `ctx.appId` | App identifier |
@@ -50,7 +53,7 @@ await ctx.collection("contacts").findOne({ email: "a@b.com" });
 
 ## Cross-app collections
 
-Requires the Core implementation identified in `../SKILL.md`. Local and remote collections share the CRUD methods and result shapes above; `remote` only selects the provider:
+Requires Core 0.25.0 or newer. Local and remote collections share the CRUD methods and result shapes above; `remote` only selects the provider:
 
 ```typescript
 const contacts = ctx.remote("crm").collection("contacts");
@@ -81,9 +84,9 @@ When upgrading to this Core implementation, upgrade all dispatchers sharing a qu
 { userId: string; email: string; authToken?: string }
 ```
 
-- `authToken` is the caller's JWT — use for `Authorization: Bearer` when calling Core REST API from the worker
-- `caller` is null for anonymous/public RPC calls
-- Always check `caller` for authorization in handlers
+- `authToken`, when present, is the authenticated caller's JWT. Do not substitute a stronger token for a denied governed operation.
+- `caller` is null in anonymous and publication-bound public RPC execution. A valid visitor JWT does not broaden a publication-bound RPC's authority.
+- Public read handlers use the approved collection capabilities without requiring a user login. Apply application-specific authorization to protected business operations; Core still enforces its permission boundaries.
 
 ## Rules
 
@@ -96,7 +99,15 @@ When upgrading to this Core implementation, upgrade all dispatchers sharing a qu
 
 ## Public RPCs
 
-When manifest declares `public.rpcs` with `scope`, Core enforces scope-match BEFORE the handler runs. The handler does NOT need to verify `caller` or check share context:
+For anonymous data reads on Core 0.26.0+, bind the RPC to approved
+`public.publications` and use `ctx.collection` or `ctx.remote(...).collection`.
+Read [publications.md](publications.md) before implementing this path. Public
+execution has no credentials or `onStart`; SQL, writes, job enqueueing, storage,
+integration calls and agent invocation are unavailable. Do not enqueue a job to
+work around these restrictions.
+
+For scoped share links, when the manifest declares `public.rpcs` with `scope`,
+Core enforces scope matching before the handler runs:
 
 ```typescript
 // Core already verified params.board_id matches the share token's context

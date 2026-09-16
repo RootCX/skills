@@ -82,7 +82,7 @@ SSE event types: `chunk`, `tool_call_started`, `tool_call_completed`, `approval_
 
 ## Cross-app tools and workflows
 
-Requires the Core implementation identified in `../SKILL.md`. Use Core-dispatched tools so supervision and task scope apply; raw `ctx.remote` and `ctx.enqueueJob` calls from agent workers are denied.
+Requires Core 0.25.0 or newer. Use Core-dispatched tools so supervision and task scope apply; raw `ctx.remote` and `ctx.enqueueJob` calls from agent workers are denied.
 
 | Tool | Arguments | Result / authority |
 |------|-----------|--------------------|

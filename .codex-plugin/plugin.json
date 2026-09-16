@@ -1,6 +1,6 @@
 {
   "name": "rootcx",
-  "version": "0.5.7",
+  "version": "0.6.0",
   "description": "Ship RootCX apps and AI agents from your assistant. RootCX handles the production stack.",
   "author": {
     "name": "RootCX",

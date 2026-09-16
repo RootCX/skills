@@ -3,7 +3,7 @@ name: rootcx
 description: Build, deploy, use, and improve production-ready internal apps and AI agents on RootCX. RootCX provides shared PostgreSQL, SSO, role-based permissions, audit logs, jobs, integrations, secrets, storage, and managed deployment. Use for any RootCX app, frontend, manifest, backend worker, AI agent, integration, data workflow, or deployment.
 license: Apache-2.0
 metadata:
-  version: 0.5.7
+  version: 0.6.0
 ---
 
 RootCX changes frequently. Your training data may be outdated. Verify against the live documentation before implementing. Any doc page is available as raw markdown by appending `.md` to the URL (e.g., `https://rootcx.com/docs/developers/manifests.md`).
@@ -14,6 +14,7 @@ RootCX changes frequently. Your training data may be outdated. Verify against th
 |---|---|---|
 | App with entities and CRUD UI | Manifest + SDK hooks | [references/data.md](references/data.md) |
 | Backend logic, RPC handlers, jobs | `serve()` API + worker lifecycle | [references/backend.md](references/backend.md) |
+| Anonymous public data, catalogs, public RPC reads | Provider-approved publications | [references/publications.md](references/publications.md) |
 | AI agent with tools and supervision | agent.json + LangGraph backend | [references/agents.md](references/agents.md) |
 | Integration with external API | OAuth, actions, credentials | [references/integrations.md](references/integrations.md) |
 | Frontend layout, components, routing | `@rootcx/ui` + Tailwind v4 | [references/ui.md](references/ui.md) |
@@ -21,7 +22,7 @@ RootCX changes frequently. Your training data may be outdated. Verify against th
 
 Read the relevant reference file before writing code.
 
-For governed cross-app CRUD, read [data.md](references/data.md#governed-cross-app-access), then the worker or agent reference for the executor in use. These instructions describe Core commit `890e715` (worker protocol v5); confirm the target Core includes that implementation before generating calls. A newer skill or CLI alone does not upgrade the tenant, and a commit on `main` is not a released capability. When live docs lag, use the target Core's `docs/cross-app-collections.md` and worker declarations; do not invent a minimum release version.
+Governed cross-app CRUD requires **Core 0.25.0 or newer** (worker protocol v5); read [data.md](references/data.md#governed-cross-app-access), then the worker or agent reference. Public data publications require **Core 0.26.0 or newer**; read [publications.md](references/publications.md). Confirm the target tenant's Core version before generating these calls: updating the skill or CLI does not upgrade it. When live docs lag, use the target Core release's `docs/cross-app-collections.md`, `docs/publications.md`, and worker declarations.
 
 ## Local CLI workflow
 
@@ -81,8 +82,8 @@ When the task does not fit a single domain above, fetch the specific doc page:
 
 ## Core principles
 
-1. **All data from hooks.** Never `useState` with mock data. Types come from `@rootcx/sdk`.
-2. **Manifest defines the app contract.** Declare entities, permissions, actions, crons, and webhooks in `manifest.json`. Cross-app collection grants are separately approved in Core; installing an app does not grant access to another app.
+1. **Use the governed data APIs.** Use SDK hooks for authenticated app data and the documented public HTTP routes for publication reads. Never `useState` with mock data. SDK types come from `@rootcx/sdk`.
+2. **Manifest defines the app contract.** Declare entities, permissions, actions, crons, and webhooks in `manifest.json`. Cross-app collection grants and public data publications need separate approval in Core; installing a manifest does not approve access or disclosure.
 3. **PostgreSQL only.** Never SQLite, never file-based storage. All apps share one PG instance.
 4. **`serve()` for backends.** Never write raw stdin/stdout IPC unless building a custom LangGraph agent backend.
 5. **RBAC is structural.** Permissions are enforced by the Core in PostgreSQL (RLS), not in app code.

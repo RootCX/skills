@@ -14,7 +14,7 @@ Full reference: `https://rootcx.com/docs/developers/manifests.md`
   "actions": [...],
   "crons": [...],
   "webhooks": [...],
-  "public": { "rpcs": [...], "collections": [...] }
+  "public": { "publications": [...], "rpcs": [...], "collections": [...] }
 }
 ```
 
@@ -55,7 +55,7 @@ const { data } = useCoreCollection<T>("users");
 
 ## Governed cross-app access
 
-Requires the Core implementation identified in `../SKILL.md`. For worker, agent, or workflow access, Core binds the consumer identity and requires an approved grant for that consumer installation, provider installation, and entity. Existing user RBAC permissions do not automatically create a grant.
+Requires Core 0.25.0 or newer. For worker, agent, or workflow access, Core binds the consumer identity and requires an approved grant for that consumer installation, provider installation, and entity. Existing user RBAC permissions do not automatically create a grant.
 
 An authorized administrator creates a pending grant with `POST /api/v1/cross-app/grants`:
 
@@ -111,9 +111,15 @@ REST lifecycle: `GET|POST /api/v1/apps/{app_id}/collections/{entity}/imports`, `
 
 ## Public access
 
-- Routes NOT in `public` require a JWT (fail-closed, 401).
+- Anonymous collection reads require Core 0.26.0+ and an approved publication. Read [publications.md](publications.md) for the manifest, provider approval, public endpoints, fixed filters, and ownership rules.
+- Declaring an RPC public or approving a cross-app grant does not itself publish collection data. Never solve an anonymous read denial by embedding an administrator or service-account token.
+- Public collection GETs use `/api/v1/public/apps/{app_id}/collections/{entity}`. The ordinary `/api/v1/apps/{app_id}/collections/{entity}` routes remain authenticated.
+- A publication binding lists which approved publications a public RPC or collection may use. Public RPCs without such bindings retain their legacy behavior; they do not gain the publication identity.
+
+## Scoped share links
+
 - Add `"public.share"` to `permissions` to let users create share links.
-- Public RPCs with `scope`: Core enforces scope-match before the handler runs. Handler does NOT check share context.
+- Public RPCs with `scope`: Core enforces share-token scope matching before the handler runs. Share links are a separate access mechanism; use publications for approved anonymous data reads.
 
 ## Public shares REST
 
