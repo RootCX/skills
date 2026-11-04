@@ -119,3 +119,16 @@ get_public_board: async (params, _caller, ctx) => {
 ## Actions (agent tools)
 
 Declare in manifest `"actions"` array. `id` = RPC method name. Worker receives standard RPC. Agent `call_action` requires its tool permission and the target's invoke or specific action permission, subject to delegation and supervision. A collection grant does not authorize an action. Worker `ctx.action(name, input)` calls only the current app.
+
+Declare `annotations` on every action so assistants (ChatGPT, Claude, agents) know when to ask the person first. Optional MCP hints, all booleans:
+
+```json
+{ "id": "save_quote", "name": "Save quote", "annotations": { "readOnlyHint": false, "destructiveHint": true, "idempotentHint": false, "openWorldHint": false } }
+```
+
+- `readOnlyHint: true`: changes nothing (list, get, search, preview).
+- `destructiveHint: true`: may overwrite, replace, remove or irreversibly change existing data (save, update, delete, finalize, accept, import over existing values).
+- `idempotentHint: true`: the same call repeated has no further effect (for example a stable `request_id`).
+- `openWorldHint: true`: reaches people or systems outside the app (public link, message, external service).
+
+Only these four keys; a read-only action cannot be destructive. Hints are advisory: permissions still decide who may run the action. Requires a Core that includes commit `1577f9c` (4 Nov 2026, not yet in a tagged public release); older Cores ignore the field, so declaring it is always safe.
